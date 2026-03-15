@@ -42,6 +42,23 @@ Each module (`auth`, `quiz`, `player`) is self-contained with its own controller
 
 See [backend/ARCHITECTURE.md](./backend/ARCHITECTURE.md) for all 12 design patterns used.
 
+## Live Demo
+
+**https://quizz-live-play.netlify.app**
+
+| Account | Email | Password | Role |
+|---------|-------|----------|------|
+| Admin | `admin@test.com` | `123456` | admin (create & host quizzes) |
+| Player 1 | `player1@test.com` | `123456` | player |
+| Player 2 | `player2@test.com` | `123456` | player |
+| Guest | — | — | Join any quiz with just a name |
+
+Sample quizzes (pre-loaded): `GENKNOW` (live mode), `SCITECH` (self-paced mode).
+
+**Quick test:** [Login as admin](https://quizz-live-play.netlify.app/login) → Start a quiz → Open [Join page](https://quizz-live-play.netlify.app/join) in another tab → Enter quiz code → Play!
+
+> Note: Backend runs on Render free tier — first request may take ~30s to wake up.
+
 ## Features
 
 - **Live Quiz Mode** — Host starts quiz, controls question flow, all players answer in real-time
