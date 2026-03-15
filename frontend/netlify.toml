@@ -1,0 +1,14 @@
+[build]
+  base = "frontend"
+  command = "npm run build"
+  publish = "build"
+
+[build.environment]
+  # Override these in Netlify dashboard with your actual Render backend URL
+  # e.g. REACT_APP_API_URL = https://quizz-backend.onrender.com/api
+  # e.g. REACT_APP_WS_URL  = wss://quizz-backend.onrender.com/ws
+
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200

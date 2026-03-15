@@ -1,0 +1,60 @@
+version: "3.8"
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: quizuser
+      POSTGRES_PASSWORD: quizpass
+      POSTGRES_DB: quizdb
+    ports:
+      - "5433:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U quizuser"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6380:6379"
+    volumes:
+      - redisdata:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+
+  backend:
+    build: ./backend
+    ports:
+      - "8080:8080"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    environment:
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_USER: quizuser
+      DB_PASSWORD: quizpass
+      DB_NAME: quizdb
+      REDIS_ADDR: redis:6379
+      JWT_SECRET: change-me-in-production
+      PORT: 8080
+
+  frontend:
+    build: ./frontend
+    ports:
+      - "5175:5175"
+    depends_on:
+      - backend
+
+volumes:
+  pgdata:
+  redisdata:

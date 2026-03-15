@@ -1,0 +1,570 @@
+basePath: /api
+definitions:
+  auth.LoginData:
+    properties:
+      token:
+        type: string
+      user:
+        $ref: '#/definitions/auth.UserResponse'
+    type: object
+  auth.LoginRequest:
+    properties:
+      email:
+        type: string
+      password:
+        type: string
+    required:
+    - email
+    - password
+    type: object
+  auth.RegisterRequest:
+    properties:
+      email:
+        type: string
+      password:
+        minLength: 6
+        type: string
+      role:
+        type: string
+      username:
+        type: string
+    required:
+    - email
+    - password
+    - username
+    type: object
+  auth.UserResponse:
+    properties:
+      created_at:
+        type: string
+      email:
+        type: string
+      id:
+        type: string
+      role:
+        type: string
+      username:
+        type: string
+    type: object
+  question.CreateRequest:
+    properties:
+      correct_idx:
+        minimum: 0
+        type: integer
+      options:
+        items:
+          type: string
+        minItems: 2
+        type: array
+      order_num:
+        type: integer
+      points:
+        type: integer
+      text:
+        type: string
+    required:
+    - options
+    - text
+    type: object
+  question.Response:
+    properties:
+      correct_idx:
+        type: integer
+      id:
+        type: string
+      options:
+        items:
+          type: string
+        type: array
+      order_num:
+        type: integer
+      points:
+        type: integer
+      quiz_id:
+        type: string
+      text:
+        type: string
+    type: object
+  quiz.CreateQuizRequest:
+    properties:
+      time_per_question:
+        type: integer
+      title:
+        type: string
+    required:
+    - title
+    type: object
+  quiz.QuizFinishData:
+    properties:
+      message:
+        type: string
+      results:
+        items:
+          $ref: '#/definitions/quiz.ResultResponse'
+        type: array
+    type: object
+  quiz.QuizJoinData:
+    properties:
+      quiz_code:
+        type: string
+      quiz_id:
+        type: string
+      status:
+        type: string
+      title:
+        type: string
+    type: object
+  quiz.QuizResponse:
+    properties:
+      created_at:
+        type: string
+      created_by:
+        type: string
+      id:
+        type: string
+      quiz_code:
+        type: string
+      status:
+        type: string
+      time_per_question:
+        type: integer
+      title:
+        type: string
+      updated_at:
+        type: string
+    type: object
+  quiz.QuizStartData:
+    properties:
+      message:
+        type: string
+      quiz_code:
+        type: string
+    type: object
+  quiz.ResultResponse:
+    properties:
+      rank:
+        type: integer
+      score:
+        type: integer
+      user_id:
+        type: string
+    type: object
+  quiz.UpdateQuizRequest:
+    properties:
+      time_per_question:
+        type: integer
+      title:
+        type: string
+    type: object
+  response.ErrorBody:
+    properties:
+      message:
+        type: string
+      status:
+        type: integer
+    type: object
+  response.ListData-question_Response:
+    properties:
+      items:
+        items:
+          $ref: '#/definitions/question.Response'
+        type: array
+      total:
+        type: integer
+    type: object
+  response.ListData-quiz_QuizResponse:
+    properties:
+      items:
+        items:
+          $ref: '#/definitions/quiz.QuizResponse'
+        type: array
+      total:
+        type: integer
+    type: object
+  response.MessageData:
+    properties:
+      message:
+        type: string
+    type: object
+  response.Response-auth_LoginData:
+    properties:
+      data:
+        $ref: '#/definitions/auth.LoginData'
+      status:
+        type: integer
+    type: object
+  response.Response-auth_UserResponse:
+    properties:
+      data:
+        $ref: '#/definitions/auth.UserResponse'
+      status:
+        type: integer
+    type: object
+  response.Response-question_Response:
+    properties:
+      data:
+        $ref: '#/definitions/question.Response'
+      status:
+        type: integer
+    type: object
+  response.Response-quiz_QuizFinishData:
+    properties:
+      data:
+        $ref: '#/definitions/quiz.QuizFinishData'
+      status:
+        type: integer
+    type: object
+  response.Response-quiz_QuizJoinData:
+    properties:
+      data:
+        $ref: '#/definitions/quiz.QuizJoinData'
+      status:
+        type: integer
+    type: object
+  response.Response-quiz_QuizResponse:
+    properties:
+      data:
+        $ref: '#/definitions/quiz.QuizResponse'
+      status:
+        type: integer
+    type: object
+  response.Response-quiz_QuizStartData:
+    properties:
+      data:
+        $ref: '#/definitions/quiz.QuizStartData'
+      status:
+        type: integer
+    type: object
+  response.Response-response_ListData-question_Response:
+    properties:
+      data:
+        $ref: '#/definitions/response.ListData-question_Response'
+      status:
+        type: integer
+    type: object
+  response.Response-response_ListData-quiz_QuizResponse:
+    properties:
+      data:
+        $ref: '#/definitions/response.ListData-quiz_QuizResponse'
+      status:
+        type: integer
+    type: object
+  response.Response-response_MessageData:
+    properties:
+      data:
+        $ref: '#/definitions/response.MessageData'
+      status:
+        type: integer
+    type: object
+host: localhost:8080
+info:
+  contact: {}
+  description: Real-time quiz platform with live leaderboards.
+  title: Quiz Platform API
+  version: "1.0"
+paths:
+  /auth/login:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Login credentials
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/auth.LoginRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response-auth_LoginData'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.ErrorBody'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/response.ErrorBody'
+      summary: Login
+      tags:
+      - auth
+  /auth/register:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Registration data
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/auth.RegisterRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/response.Response-auth_UserResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.ErrorBody'
+        "409":
+          description: Conflict
+          schema:
+            $ref: '#/definitions/response.ErrorBody'
+      summary: Register new user
+      tags:
+      - auth
+  /questions/{qid}:
+    delete:
+      parameters:
+      - description: Question ID (UUID)
+        in: path
+        name: qid
+        required: true
+        type: string
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response-response_MessageData'
+      security:
+      - BearerAuth: []
+      summary: Delete question
+      tags:
+      - questions
+    put:
+      consumes:
+      - application/json
+      parameters:
+      - description: Question ID (UUID)
+        in: path
+        name: qid
+        required: true
+        type: string
+      - description: Question data
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/question.CreateRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response-question_Response'
+      security:
+      - BearerAuth: []
+      summary: Update question
+      tags:
+      - questions
+  /quizzes:
+    get:
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response-response_ListData-quiz_QuizResponse'
+      security:
+      - BearerAuth: []
+      summary: List quizzes
+      tags:
+      - quizzes
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Quiz data
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/quiz.CreateQuizRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/response.Response-quiz_QuizResponse'
+      security:
+      - BearerAuth: []
+      summary: Create quiz
+      tags:
+      - quizzes
+  /quizzes/{id}:
+    delete:
+      parameters:
+      - description: Quiz ID (UUID)
+        in: path
+        name: id
+        required: true
+        type: string
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response-response_MessageData'
+      security:
+      - BearerAuth: []
+      summary: Delete quiz
+      tags:
+      - quizzes
+    get:
+      parameters:
+      - description: Quiz ID (UUID)
+        in: path
+        name: id
+        required: true
+        type: string
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response-quiz_QuizResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/response.ErrorBody'
+      security:
+      - BearerAuth: []
+      summary: Get quiz by ID
+      tags:
+      - quizzes
+    put:
+      parameters:
+      - description: Quiz ID (UUID)
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Quiz update data
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/quiz.UpdateQuizRequest'
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response-quiz_QuizResponse'
+      security:
+      - BearerAuth: []
+      summary: Update quiz
+      tags:
+      - quizzes
+  /quizzes/{id}/finish:
+    post:
+      parameters:
+      - description: Quiz ID (UUID)
+        in: path
+        name: id
+        required: true
+        type: string
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response-quiz_QuizFinishData'
+      security:
+      - BearerAuth: []
+      summary: Finish quiz
+      tags:
+      - quizzes
+  /quizzes/{id}/questions:
+    get:
+      parameters:
+      - description: Quiz ID (UUID)
+        in: path
+        name: id
+        required: true
+        type: string
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response-response_ListData-question_Response'
+      security:
+      - BearerAuth: []
+      summary: List questions
+      tags:
+      - questions
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Quiz ID (UUID)
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Question data
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/question.CreateRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/response.Response-question_Response'
+      security:
+      - BearerAuth: []
+      summary: Create question
+      tags:
+      - questions
+  /quizzes/{id}/start:
+    post:
+      parameters:
+      - description: Quiz ID (UUID)
+        in: path
+        name: id
+        required: true
+        type: string
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response-quiz_QuizStartData'
+      security:
+      - BearerAuth: []
+      summary: Start quiz
+      tags:
+      - quizzes
+  /quizzes/join/{code}:
+    get:
+      parameters:
+      - description: Quiz code
+        in: path
+        name: code
+        required: true
+        type: string
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response-quiz_QuizJoinData'
+      summary: Join quiz by code
+      tags:
+      - quizzes
+securityDefinitions:
+  BearerAuth:
+    description: Enter "Bearer {token}"
+    in: header
+    name: Authorization
+    type: apiKey
+swagger: "2.0"

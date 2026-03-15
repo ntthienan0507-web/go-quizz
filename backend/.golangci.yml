@@ -1,0 +1,39 @@
+version: "2"
+
+run:
+  timeout: 5m
+
+linters:
+  enable:
+    - errcheck
+    - govet
+    - staticcheck
+    - unused
+    - ineffassign
+    - gocritic
+    - gosec
+    - unconvert
+    - misspell
+    - nilerr
+    - bodyclose
+    - sqlclosecheck
+
+  settings:
+    gocritic:
+      enabled-tags:
+        - diagnostic
+        - performance
+      disabled-checks:
+        - ifElseChain
+        - hugeParam
+    gosec:
+      excludes:
+        - G101
+    govet:
+      enable-all: true
+      disable:
+        - fieldalignment
+
+issues:
+  max-issues-per-linter: 50
+  max-same-issues: 5
